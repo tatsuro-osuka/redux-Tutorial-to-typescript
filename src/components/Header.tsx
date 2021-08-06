@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, VFC } from "react";
 
-const Header = () => {
+const Header: VFC = () => {
   const [text, setText] = useState("");
 
   const handleChange = (e: {

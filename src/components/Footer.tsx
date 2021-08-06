@@ -1,4 +1,4 @@
-import React from "react";
+import React, { VFC } from "react";
 import { availableColors, capitalize } from "../features/filters/colors";
 import { StatusFilters } from "../features/filters/filterSlice";
 
@@ -41,7 +41,12 @@ const StatusFilter = ({ value: status, onChange }: StatusFilterType) => {
   );
 };
 
-const ColorFilters = ({ value: colors, onChange }) => {
+interface ColorFilterType {
+  colors: string[];
+  onChange: Function;
+}
+
+const ColorFilters = ({ colors, onChange }: ColorFilterType) => {
   const renderedColors = availableColors.map((color) => {
     const checked = colors.includes(color);
     const handleChange = () => {
@@ -76,14 +81,17 @@ const ColorFilters = ({ value: colors, onChange }) => {
   );
 };
 
-const Footer = () => {
+const Footer: VFC = () => {
   const colors: string[] = [];
   const status = StatusFilters.All;
   const todosRemaining = 1;
 
-  const onColorChange = (color, changeType) =>
+  const onColorChange = (color: string, changeType: "added" | "removed") =>
     console.log("Color change: ", { color, changeType });
-  const onStatusChange = (status) => console.log("Status change: ", status);
+  const onStatusChange = (status: {
+    color: string;
+    changeType: "added" | "removed";
+  }) => console.log("Status change: ", status);
 
   return (
     <footer className="footer">
@@ -95,7 +103,7 @@ const Footer = () => {
 
       <RemainingTodos count={todosRemaining} />
       <StatusFilter value={status} onChange={onStatusChange} />
-      <ColorFilters value={colors} onChange={onColorChange} />
+      <ColorFilters colors={colors} onChange={onColorChange} />
     </footer>
   );
 };

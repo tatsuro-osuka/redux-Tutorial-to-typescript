@@ -120,7 +120,7 @@ export const selectFilteredTodos = createSelector(
     }
 
     const completedStatus = status === StatusFilters.Complete;
-    return todos.filter((todo) => {
+    return todos.filter((todo: { completed?: boolean; color?: string }) => {
       const statusMatches =
         showAllCompletions || todo.completed === completedStatus;
       const colorMatches = colors.length === 0 || colors.includes(todo.color);
