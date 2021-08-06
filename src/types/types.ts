@@ -1,6 +1,6 @@
 export interface TodoType {
-  [id: number]: string;
-  id?: number;
+  [id: number]: any;
+  id?: string | number;
   userId?: number;
   title?: string;
   completed?: boolean;

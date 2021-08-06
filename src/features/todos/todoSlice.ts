@@ -18,7 +18,7 @@ const todosSlice = createSlice({
   initialState,
   reducers: {
     todoAdded(state, action) {
-      const todo: TodoType = action.payload;
+      const todo = action.payload;
       state.entities[todo.id] = todo;
     },
     todoToggled(state, action) {
@@ -28,8 +28,7 @@ const todosSlice = createSlice({
     },
     todoColorSelected: {
       reducer(state, action) {
-        const { color, todoId }: { color: string; todoId: number } =
-          action.payload;
+        const { color, todoId } = action.payload;
         state.entities[todoId].color = color;
       },
       prepare(todoId, color): any {
@@ -58,7 +57,7 @@ const todosSlice = createSlice({
     },
     todosLoaded(state, action) {
       const newEntities: any = {};
-      action.payload.forEach((todo: TodoType) => {
+      action.payload.forEach((todo: { id: string | number }) => {
         newEntities[todo.id] = todo;
       });
       state.entities = newEntities;
@@ -120,7 +119,7 @@ export const selectFilteredTodos = createSelector(
     }
 
     const completedStatus = status === StatusFilters.Complete;
-    return todos.filter((todo: { completed?: boolean; color?: string }) => {
+    return todos.filter((todo: any) => {
       const statusMatches =
         showAllCompletions || todo.completed === completedStatus;
       const colorMatches = colors.length === 0 || colors.includes(todo.color);
@@ -131,5 +130,5 @@ export const selectFilteredTodos = createSelector(
 
 export const selectFilteredTodoIds = createSelector(
   selectFilteredTodos,
-  (filteredTodos) => filteredTodos.map((todo) => todo.id)
+  (filteredTodos) => filteredTodos.map((todo: any) => todo.id)
 );
