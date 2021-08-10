@@ -1,7 +1,7 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
 import { TodoType } from "../../types/types";
 import axios from "axios";
-import { StatusFilters } from "../filters/filterSlice";
+import { statusFilters } from "../filters/filterSlice";
 
 interface TodoState {
   status: "idle" | "loading";
@@ -40,19 +40,19 @@ const todosSlice = createSlice({
     todoDeleted(state, action) {
       delete state.entities[action.payload];
     },
-    allTodosCompleted(state, action) {
+    allTodosCompleted(state, _action) {
       Object.values(state.entities).forEach((todo: any) => {
         todo.completed = true;
       });
     },
-    completedTodosCleared(state, action) {
+    completedTodosCleared(state, _action) {
       Object.values(state.entities).forEach((todo: any) => {
         if (todo.completed) {
           delete state.entities[todo.id];
         }
       });
     },
-    todosLoading(state, action) {
+    todosLoading(state, _action) {
       state.status = "loading";
     },
     todosLoaded(state, action) {
@@ -110,7 +110,7 @@ export function saveNewTodo(text: string, lastid: number) {
   };
 }
 
-const selectTodoEntities = (state: { todos: { entities: any } }) =>
+const selectTodoEntities = (state: { todos: { entities: TodoType } }) =>
   state.todos.entities;
 
 export const selectTodos = createSelector(selectTodoEntities, (entities) =>
@@ -130,12 +130,12 @@ export const selectFilteredTodos = createSelector(
   (state: any) => state.filters,
   (todos, filters) => {
     const { status, colors } = filters;
-    const showAllCompletions = status === StatusFilters.All;
+    const showAllCompletions = status === statusFilters.All;
     if (showAllCompletions && colors.length === 0) {
       return todos;
     }
 
-    const completedStatus = status === StatusFilters.Complete;
+    const completedStatus = status === statusFilters.Completed;
     return todos.filter((todo: any) => {
       const statusMatches =
         showAllCompletions || todo.completed === completedStatus;

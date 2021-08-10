@@ -1,6 +1,16 @@
 import React, { VFC } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { availableColors, capitalize } from "../features/filters/colors";
-import { StatusFilters } from "../features/filters/filterSlice";
+import {
+  colorFilterChanged,
+  statusFilterChanged,
+  statusFilters,
+} from "../features/filters/filterSlice";
+import {
+  allTodosCompleted,
+  completedTodosCleared,
+  selectTodos,
+} from "../features/todos/todoSlice";
 
 const RemainingTodos = ({ count }: { count: number }) => {
   const suffix = count === 1 ? "" : "s";
@@ -19,8 +29,8 @@ interface StatusFilterType {
 }
 
 const StatusFilter = ({ value: status, onChange }: StatusFilterType) => {
-  const renderedFilters = Object.keys(StatusFilters).map((key) => {
-    const value = StatusFilters[key];
+  const renderedFilters = Object.keys(statusFilters).map((key) => {
+    const value = statusFilters[key];
     const handleClick = () => onChange(value);
     const className = value === status ? "selected" : "";
 
@@ -82,23 +92,41 @@ const ColorFilters = ({ colors, onChange }: ColorFilterType) => {
 };
 
 const Footer: VFC = () => {
-  const colors: string[] = [];
-  const status = StatusFilters.All;
-  const todosRemaining = 1;
+  const dispatch = useDispatch();
 
-  const onColorChange = (color: string, changeType: "added" | "removed") =>
-    console.log("Color change: ", { color, changeType });
+  const todosRemaining = useSelector((state: any) => {
+    const unCompletedTodos = selectTodos(state).filter(
+      (todo) => !todo.completed
+    );
+    return unCompletedTodos.length;
+  });
+
+  const { status, colors } = useSelector((state: any) => state.filters);
+
+  const onCheckCompletedClicked = () => dispatch(allTodosCompleted(null));
+  const onClearCompletedClicked = () => dispatch(completedTodosCleared(null));
+
+  const onColorChange = (color: string, changeType: "added" | "removed") => {
+    dispatch(colorFilterChanged(color, changeType));
+  };
+
   const onStatusChange = (status: {
     color: string;
     changeType: "added" | "removed";
-  }) => console.log("Status change: ", status);
+  }) => {
+    dispatch(statusFilterChanged(status));
+  };
 
   return (
     <footer className="footer">
       <div className="actions">
         <h5>Actions</h5>
-        <button className="button">Mark All Completed</button>
-        <button className="button">Clear Completed</button>
+        <button className="button" onClick={onCheckCompletedClicked}>
+          Mark All Completed
+        </button>
+        <button className="button" onClick={onClearCompletedClicked}>
+          Clear Completed
+        </button>
       </div>
 
       <RemainingTodos count={todosRemaining} />
