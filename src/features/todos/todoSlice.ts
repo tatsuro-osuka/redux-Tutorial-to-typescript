@@ -1,6 +1,6 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
 import { TodoType } from "../../types/types";
-
+import axios from "axios";
 import { StatusFilters } from "../filters/filterSlice";
 
 interface TodoState {
@@ -79,19 +79,36 @@ export const {
 
 export default todosSlice.reducer;
 
-// export const fetchTodos = () => async (dispatch) => {
-//   dispatch(todosLoading());
-//   const res = await client.get("/fakeApi/todos");
-//   dispatch(todosLoaded(res.todos));
-// };
+interface FetchData {
+  userId: number;
+  id: number;
+  title: string;
+  completed: boolean;
+}
 
-// export function saveNewTodo(text) {
-//   return async function saveNewTodoThunk(dispatch, getState) {
-//     const initialTodo = { text };
-//     const res = await client.post("/fakeApi/todos", { todo: initialTodo });
-//     dispatch(todoAdded(res.todo));
-//   };
-// }
+export const fetchTodos =
+  () => (dispatch: (arg0: { payload: any; type: string }) => void) => {
+    axios
+      .get<FetchData[]>("https://jsonplaceholder.typicode.com/todos?_limit=5")
+      .then((res) => {
+        const data = res.data;
+        dispatch(todosLoaded(data));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+export function saveNewTodo(text: string, lastid: number) {
+  const newid = lastid + 1;
+  return async function saveNewTodoAdd(
+    dispatch: (arg0: { payload: any; type: string }) => void
+  ) {
+    // console.log(state.entities[todo.id]);
+    const initialTodo = { userId: 1, id: newid, title: text, completed: false };
+    dispatch(todoAdded(initialTodo));
+  };
+}
 
 const selectTodoEntities = (state: { todos: { entities: any } }) =>
   state.todos.entities;

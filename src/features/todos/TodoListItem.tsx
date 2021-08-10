@@ -8,13 +8,10 @@ import {
   todoToggled,
 } from "./todoSlice";
 
-const TodoListItem = (
-  todo: any,
-  { id, key }: { id: number; key: number | undefined }
-) => {
+const TodoListItem = ({ id }: { id: any }) => {
   // Call our `selectTodoById` with the state _and_ the ID value
-  todo = useSelector((state) => selectTodoById(state, id));
-  const { text, completed, color } = todo;
+  const todo = useSelector((state) => selectTodoById(state, id));
+  const { title, completed, color } = todo;
 
   const dispatch = useDispatch();
 
@@ -47,7 +44,7 @@ const TodoListItem = (
             checked={completed}
             onChange={handleCompletedChanged}
           />
-          <div className="todo-text">{text}</div>
+          <div className="todo-text">{title}</div>
         </div>
         <div className="segment buttons">
           <select
