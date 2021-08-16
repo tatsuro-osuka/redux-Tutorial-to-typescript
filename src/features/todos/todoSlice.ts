@@ -5,12 +5,12 @@ import { statusFilters } from "../filters/filterSlice";
 
 interface TodoState {
   status: "idle" | "loading";
-  entities: TodoType;
+  entities: TodoType[];
 }
 
 const initialState: TodoState = {
   status: "idle",
-  entities: {},
+  entities: [{}],
 };
 
 const todosSlice = createSlice({
@@ -41,7 +41,7 @@ const todosSlice = createSlice({
       delete state.entities[action.payload];
     },
     allTodosCompleted(state, _action) {
-      Object.values(state.entities).forEach((todo: any) => {
+      Object.values(state.entities).forEach((todo) => {
         todo.completed = true;
       });
     },
@@ -89,7 +89,7 @@ export default todosSlice.reducer;
 export function saveNewTodo(text: string, lastid: number) {
   const newid = lastid + 1;
   return async function saveNewTodoAdd(
-    dispatch: (arg0: { payload: any; type: string }) => void
+    dispatch: (arg0: { payload: string; type: string }) => void
   ) {
     const initialTodo = { userId: 1, id: newid, title: text, completed: false };
     dispatch(todoAdded(initialTodo));
@@ -103,12 +103,12 @@ export const selectTodos = createSelector(selectTodoEntities, (entities) =>
   Object.values(entities)
 );
 
-export const selectTodoById = (state: any, todoId: number) => {
-  return selectTodoEntities(state)[todoId];
+export const selectTodoById = (state: any, todoId: any) => {
+  return selectTodoEntities(state.todoId);
 };
 
 export const selectTodoIds = createSelector(selectTodos, (todos) =>
-  todos.map((todo: any) => todo.id)
+  todos.map((todo) => todo.id)
 );
 
 export const selectFilteredTodos = createSelector(
@@ -122,7 +122,7 @@ export const selectFilteredTodos = createSelector(
     }
 
     const completedStatus = status === statusFilters.Completed;
-    return todos.filter((todo: any) => {
+    return todos.filter((todo) => {
       const statusMatches =
         showAllCompletions || todo.completed === completedStatus;
       const colorMatches = colors.length === 0 || colors.includes(todo.color);
@@ -133,5 +133,5 @@ export const selectFilteredTodos = createSelector(
 
 export const selectFilteredTodoIds = createSelector(
   selectFilteredTodos,
-  (filteredTodos) => filteredTodos.map((todo: any) => todo.id)
+  (filteredTodos) => filteredTodos.map((todo) => todo.id)
 );

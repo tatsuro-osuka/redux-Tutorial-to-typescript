@@ -1,3 +1,3 @@
 export const availableColors = ["green", "blue", "orange", "purple", "red"];
-export const capitalize = (s: string | any[]) =>
+export const capitalize = (s: string | string[]) =>
   s[0].toUpperCase() + s.slice(1);

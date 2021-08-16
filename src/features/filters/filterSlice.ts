@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { StatusFiltersType } from "../../types/types";
 
-export const statusFilters: any = {
+export const statusFilters: StatusFiltersType = {
   All: "all",
   Active: "active",
   Completed: "complete",
