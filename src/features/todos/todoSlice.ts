@@ -1,6 +1,6 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
+import { fetchTodos } from "../../api/fetchTodos";
 import { TodoType } from "../../types/types";
-import axios from "axios";
 import { statusFilters } from "../filters/filterSlice";
 
 interface TodoState {
@@ -64,6 +64,13 @@ const todosSlice = createSlice({
       state.status = "idle";
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(fetchTodos.fulfilled, (state, action) => {
+      action.payload.todos.forEach((todo) => {
+        state.entities[todo.id] = todo;
+      });
+    });
+  },
 });
 
 export const {
@@ -79,32 +86,11 @@ export const {
 
 export default todosSlice.reducer;
 
-interface FetchData {
-  userId: number;
-  id: number;
-  title: string;
-  completed: boolean;
-}
-
-export const fetchTodos =
-  () => (dispatch: (arg0: { payload: any; type: string }) => void) => {
-    axios
-      .get<FetchData[]>("https://jsonplaceholder.typicode.com/todos?_limit=5")
-      .then((res) => {
-        const data = res.data;
-        dispatch(todosLoaded(data));
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
 export function saveNewTodo(text: string, lastid: number) {
   const newid = lastid + 1;
   return async function saveNewTodoAdd(
     dispatch: (arg0: { payload: any; type: string }) => void
   ) {
-    // console.log(state.entities[todo.id]);
     const initialTodo = { userId: 1, id: newid, title: text, completed: false };
     dispatch(todoAdded(initialTodo));
   };
