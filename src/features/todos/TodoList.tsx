@@ -6,7 +6,7 @@ import { selectFilteredTodoIds } from "./todoSlice";
 const TodoList = () => {
   const todos = useSelector(selectFilteredTodoIds);
 
-  const renderedListItems = todos.map((todoId: React.Key) => {
+  const renderedListItems = todos.map((todoId) => {
     return <TodoListItem key={todoId} id={todoId} />;
   });
 

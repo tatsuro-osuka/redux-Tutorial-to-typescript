@@ -1,13 +1,14 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { StatusFiltersType } from "../../types/types";
 
-export const statusFilters: any = {
+export const statusFilters = {
   All: "all",
   Active: "active",
   Completed: "complete",
 };
 
-const initialState = {
-  status: statusFilters.All,
+const initialState: { status: StatusFiltersType; colors: string[] } = {
+  status: "all",
   colors: [],
 };
 
@@ -19,11 +20,14 @@ const filtersSlice = createSlice({
       state.status = action.payload;
     },
     colorFilterChanged: {
-      reducer(state, action) {
-        let {
-          color,
-          changeType,
-        }: { color: never; changeType: "added" | "removed" } = action.payload;
+      reducer(
+        state,
+        action: PayloadAction<{
+          color: string;
+          changeType: "added" | "removed";
+        }>
+      ) {
+        const { color, changeType } = action.payload;
         const { colors } = state;
         switch (changeType) {
           case "added": {
@@ -42,7 +46,7 @@ const filtersSlice = createSlice({
             return;
         }
       },
-      prepare(color, changeType): any {
+      prepare(color, changeType) {
         return {
           payload: { color, changeType },
         };
