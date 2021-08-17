@@ -5,12 +5,14 @@ export interface FetchData {
   id: number;
   title: string;
   completed: boolean;
+  [id: number]: any;
 }
 
-export const fetchTodos = createAsyncThunk("todos/fetchTodos", async () => {
-  const res = await fetch(
-    "https://jsonplaceholder.typicode.com/todos?_limit=5"
-  );
-  const data: FetchData[] = await res.json();
-  return { todos: data };
-});
+export const fetchTodos = createAsyncThunk<{ todos: FetchData[] }>(
+  "todos/fetchTodos",
+  async () => ({
+    todos: await fetch(
+      "https://jsonplaceholder.typicode.com/todos?_limit=5"
+    ).then((res) => res.json()),
+  })
+);

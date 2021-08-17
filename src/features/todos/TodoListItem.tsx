@@ -1,5 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { StateType } from "../../types/types";
 import { availableColors, capitalize } from "../filters/colors";
 import {
   selectTodoById,
@@ -10,7 +11,7 @@ import {
 
 const TodoListItem = ({ id }: { id: number }) => {
   // Call our `selectTodoById` with the state _and_ the ID value
-  const todo = useSelector((state) => selectTodoById(state, id));
+  const todo = useSelector((state: StateType) => selectTodoById(state, id));
   const { title, completed, color } = todo;
 
   const dispatch = useDispatch();

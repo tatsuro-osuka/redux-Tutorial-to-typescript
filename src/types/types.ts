@@ -7,14 +7,20 @@ export interface TodoType {
   color?: string;
 }
 
-export interface StatusFiltersType {
-  All: "all";
-  Active: "active";
-  Completed: "complete";
-  [key: string]: string;
-}
+export type StatusFiltersType = "all" | "active" | "complete";
 
 export interface ColorFilterChanged {
-  color: never;
+  color: string;
   changeType: "added" | "removed";
+}
+
+export interface StateType {
+  filters: {
+    colors: string[];
+    status: string;
+  };
+  todos: {
+    entities: TodoType[];
+    status: string;
+  };
 }

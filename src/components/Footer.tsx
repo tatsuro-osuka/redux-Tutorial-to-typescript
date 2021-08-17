@@ -11,6 +11,7 @@ import {
   completedTodosCleared,
   selectTodos,
 } from "../features/todos/todoSlice";
+import { StateType } from "../types/types";
 
 const RemainingTodos = ({ count }: { count: number }) => {
   const suffix = count === 1 ? "" : "s";
@@ -30,7 +31,7 @@ interface StatusFilterType {
 
 const StatusFilter = ({ value: status, onChange }: StatusFilterType) => {
   const renderedFilters = Object.keys(statusFilters).map((key) => {
-    const value = statusFilters[key];
+    const value = statusFilters[key as keyof typeof statusFilters];
     const handleClick = () => onChange(value);
     const className = value === status ? "selected" : "";
 
@@ -94,14 +95,14 @@ const ColorFilters = ({ colors, onChange }: ColorFilterType) => {
 const Footer: VFC = () => {
   const dispatch = useDispatch();
 
-  const todosRemaining = useSelector((state: any) => {
+  const todosRemaining = useSelector((state: StateType) => {
     const unCompletedTodos = selectTodos(state).filter(
       (todo) => !todo.completed
     );
     return unCompletedTodos.length;
   });
 
-  const { status, colors } = useSelector((state: any) => state.filters);
+  const { status, colors } = useSelector((state: StateType) => state.filters);
 
   const onCheckCompletedClicked = () => dispatch(allTodosCompleted(null));
   const onClearCompletedClicked = () => dispatch(completedTodosCleared(null));
